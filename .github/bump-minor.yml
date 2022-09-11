@@ -1,18 +1,23 @@
-name: Bump Version Number
+name: Bump Minor Version
 on:
   push:
     branches:
-      - master
+      - main
+
+on:
+  pull_request:
+    types: [opened, reopened, labeled, synchronize]
 
 jobs:
   run:
-    name: Bump Version Number
+    name: Bump Minor Version
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        python-version: [3.9]
+        python-version: [3.10]
 
+    if: contains(github.event.pull_request.labels.*.name, 'bump-minor-version')
     steps:
       - name: Checkout current branch
         uses: actions/checkout@v2
@@ -20,10 +25,10 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: snok/install-poetry@v1.1.1
+      - uses: snok/install-poetry@v1
         with:
           virtualenvs-create: true
 
